@@ -1,0 +1,53 @@
+---
+# NOTES
+# -----
+# The spotify key-repo relation seems not to be set up correctly. That's why we need to use the legacy way to do it. That means:
+# We put the key under /etc/apt/trusted.gpg.d/ instead of /etc/apt/keyrings
+# We use spotify.list instead of spotify.sources
+
+- name: Spotify role
+  tags:
+    - spotify
+  block:
+
+  # copy key
+  - name: Copy repo key to /etc/apt/trusted.gpg.d/spotify.gpg
+    become: true
+    ansible.builtin.copy:
+      src: spotify.gpg
+      dest: /etc/apt/trusted.gpg.d/spotify.gpg
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+
+  # copy repo file
+  - name: Copy repo file
+    become: true
+    register: add_repo
+    ansible.builtin.copy:
+      src: spotify.list
+      dest: /etc/apt/sources.list.d/
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+  
+  # rm spotify.sources
+  - name: Remove /etc/apt/sources.list.d/spotify.sources
+    become: true
+    ansible.builtin.file:
+      path: /etc/apt/sources.list.d/spotify.sources
+      state: absent
+
+  # update cache
+  - name: Update apt cache
+    when: add_repo.changed
+    become: true
+    ansible.builtin.apt:
+      update_cache: true
+
+  # install spotify
+  - name: Install spotify
+    become: true
+    ansible.builtin.apt:
+      state: "{{ spotify.apt.state }}"
+      name: spotify-client
