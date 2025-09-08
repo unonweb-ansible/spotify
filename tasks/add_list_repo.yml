@@ -1,0 +1,27 @@
+# copy key
+- name: Copy repo key to /etc/apt/trusted.gpg.d/spotify.gpg
+  become: true
+  ansible.builtin.copy:
+    src: spotify.gpg
+    dest: /etc/apt/trusted.gpg.d/spotify.gpg
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+# copy repo file
+- name: Copy repo file
+  become: true
+  ansible.builtin.copy:
+    src: spotify.list
+    dest: /etc/apt/sources.list.d/
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  register: add_repo
+
+# rm sources repo
+- name: Remove /etc/apt/sources.list.d/spotify.sources
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/spotify.sources
+    state: absent

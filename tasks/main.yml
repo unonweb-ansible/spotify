@@ -10,33 +10,8 @@
     - spotify
   block:
 
-  # copy key
-  - name: Copy repo key to /etc/apt/trusted.gpg.d/spotify.gpg
-    become: true
-    ansible.builtin.copy:
-      src: spotify.gpg
-      dest: /etc/apt/trusted.gpg.d/spotify.gpg
-      owner: root
-      group: root
-      mode: u=rw,g=r,o=r
-
-  # copy repo file
-  - name: Copy repo file
-    become: true
-    register: add_repo
-    ansible.builtin.copy:
-      src: spotify.list
-      dest: /etc/apt/sources.list.d/
-      owner: root
-      group: root
-      mode: u=rw,g=r,o=r
-  
-  # rm spotify.sources
-  - name: Remove /etc/apt/sources.list.d/spotify.sources
-    become: true
-    ansible.builtin.file:
-      path: /etc/apt/sources.list.d/spotify.sources
-      state: absent
+  # add repo
+  - ansible.builtin.import_tasks: "{{ spotify.apt.repo_subtask }}"
 
   # update cache
   - name: Update apt cache

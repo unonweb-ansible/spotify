@@ -2,3 +2,4 @@
 spotify:
   apt:
     state: present
+    repo_subtask: add_sources_repo.yml

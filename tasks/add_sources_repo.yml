@@ -1,0 +1,38 @@
+# mkdir
+- name: Make sure directory /etc/apt/keyrings exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+
+# copy key
+- name: Copy repo key to /etc/apt/keyrings/spotify.gpg
+  become: true
+  ansible.builtin.copy:
+    src: spotify.gpg
+    dest: /etc/apt/keyrings/spotify.gpg
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+# rm list repo
+- name: Remove /etc/apt/sources.list.d/spotify.list
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/spotify.list
+    state: absent
+
+# add repo
+- name: Add repo
+  become: true
+  ansible.builtin.deb822_repository:
+    architectures: amd64
+    name: spotify
+    types: deb
+    uris: https://repository.spotify.com
+    suites: stable
+    components: non-free
+    enabled: yes
+    signed_by: /etc/apt/keyrings/spotify.gpg
+  register: add_repo
