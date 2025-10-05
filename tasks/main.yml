@@ -21,7 +21,7 @@
       update_cache: true
 
   # install spotify
-  - name: Install spotify
+  - name: Apt spotify {{ spotify.apt.state }}
     become: true
     ansible.builtin.apt:
       state: "{{ spotify.apt.state }}"
