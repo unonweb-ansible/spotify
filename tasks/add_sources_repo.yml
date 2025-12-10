@@ -35,4 +35,4 @@
     components: non-free
     enabled: yes
     signed_by: /etc/apt/keyrings/spotify.gpg
-  register: add_repo
+  register: __spotify_add_repo

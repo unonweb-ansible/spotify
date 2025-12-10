@@ -17,7 +17,7 @@
     owner: root
     group: root
     mode: u=rw,g=r,o=r
-  register: add_repo
+  register: __spotify_add_repo
 
 # rm sources repo
 - name: Remove /etc/apt/sources.list.d/spotify.sources

@@ -1,5 +1,3 @@
 ---
-spotify:
-  apt:
-    state: present
-    repo_subtask: add_sources_repo.yml
+spotify_apt_state: present
+spotify_apt_repo_subtask: add_sources_repo.yml
